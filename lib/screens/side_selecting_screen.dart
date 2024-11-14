@@ -14,6 +14,10 @@ class SideSelectingScreen extends StatelessWidget {
       await _audioPlayer.play(AssetSource("button_pressed.mp3"));
     }
 
+    Future<void> playGameStartSound() async {
+      await _audioPlayer.play(AssetSource("game_start.mp3"));
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: CommonColors.primaryColor.withOpacity(0.5),
@@ -51,7 +55,7 @@ class SideSelectingScreen extends StatelessWidget {
             ),
             GestureDetector(
               onTap: () {
-                playButtonTapSound();
+                playGameStartSound();
                 Navigator.push(
                     context,
                     CupertinoPageRoute(
@@ -81,7 +85,7 @@ class SideSelectingScreen extends StatelessWidget {
             ),
             GestureDetector(
               onTap: () {
-                playButtonTapSound();
+                playGameStartSound();
                 Navigator.push(
                     context,
                     CupertinoPageRoute(
