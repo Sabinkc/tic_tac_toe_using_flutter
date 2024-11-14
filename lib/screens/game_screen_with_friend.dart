@@ -1,10 +1,12 @@
+import 'dart:math';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:tic_tac_toe/common/colors.dart';
 import 'package:tic_tac_toe/common/common_button.dart';
 
 class GameScreenWithFriend extends StatefulWidget {
-  const GameScreenWithFriend({Key? key}) : super(key: key);
+  const GameScreenWithFriend({super.key});
 
   @override
   _GameScreenWithFriendState createState() => _GameScreenWithFriendState();
@@ -12,8 +14,22 @@ class GameScreenWithFriend extends StatefulWidget {
 
 class _GameScreenWithFriendState extends State<GameScreenWithFriend> {
   List<String> _board = List.filled(9, ''); // Empty board
-  bool _isPlayerOneTurn = true; // Player 1 starts first
+  bool _isPlayer1Turn = true; // Initially set to Player 1's turn
   String _winner = '';
+
+  final AudioPlayer _audioPlayer = AudioPlayer();
+
+  Future<void> playButtonTapSound() async {
+    await _audioPlayer.play(AssetSource("button_pressed.mp3"));
+  }
+
+  Future<void> playGameOverSound() async {
+    await _audioPlayer.play(AssetSource("game_over.mp3"));
+  }
+
+  Future<void> playGameStartSound() async {
+    await _audioPlayer.play(AssetSource("game_start.mp3"));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +37,10 @@ class _GameScreenWithFriendState extends State<GameScreenWithFriend> {
       appBar: AppBar(
         backgroundColor: Colors.purple.withOpacity(0.5),
         leading: IconButton(
-          onPressed: _showEndGameConfirmationDialog,
+          onPressed: () {
+            playButtonTapSound();
+            _showEndGameConfirmationDialog();
+          },
           icon: const Icon(Icons.arrow_back_ios),
           color: Colors.white,
         ),
@@ -39,7 +58,7 @@ class _GameScreenWithFriendState extends State<GameScreenWithFriend> {
           children: [
             Text(
               _winner.isEmpty
-                  ? (_isPlayerOneTurn ? "Player 1's turn" : "Player 2's turn")
+                  ? (_isPlayer1Turn ? "Player 1's turn!" : "Player 2's turn!")
                   : 'Winner: $_winner',
               style: const TextStyle(color: Colors.white, fontSize: 30),
             ),
@@ -77,20 +96,26 @@ class _GameScreenWithFriendState extends State<GameScreenWithFriend> {
             ),
             const SizedBox(height: 50),
             CommonButton(
-              title: "Restart",
-              buttonColor: Colors.transparent,
-              titleColor: Colors.white,
-              borderColor: Colors.white,
-              onTap: _showRestartConfirmationDialog,
+                title: "Restart",
+                buttonColor: Colors.transparent,
+                titleColor: Colors.white,
+                borderColor: Colors.white,
+                onTap: () {
+                  playButtonTapSound();
+                  _showRestartConfirmationDialog();
+                }),
+            const SizedBox(
+              height: 20,
             ),
-            const SizedBox(height: 20),
             CommonButton(
-              title: "End Game",
-              buttonColor: Colors.white,
-              titleColor: CommonColors.primaryColor,
-              borderColor: Colors.white,
-              onTap: _showEndGameConfirmationDialog,
-            ),
+                title: "End Game",
+                buttonColor: Colors.white,
+                titleColor: CommonColors.primaryColor,
+                borderColor: Colors.white,
+                onTap: () {
+                  playButtonTapSound();
+                  _showEndGameConfirmationDialog();
+                }),
           ],
         ),
       ),
@@ -98,16 +123,17 @@ class _GameScreenWithFriendState extends State<GameScreenWithFriend> {
   }
 
   void _onTap(int index) {
-    if (_board[index].isEmpty && _winner.isEmpty) {
+    if (_board[index].isEmpty) {
+      playButtonTapSound(); // Play sound on player tap
       setState(() {
-        _board[index] = _isPlayerOneTurn ? 'X' : 'O';
-        _isPlayerOneTurn = !_isPlayerOneTurn;
+        _board[index] = _isPlayer1Turn ? 'X' : 'O';
+        _isPlayer1Turn = !_isPlayer1Turn;
       });
-      if (_checkWinner()) {
+      if (_checkWinner(_board[index])) {
         setState(() {
-          _winner = _isPlayerOneTurn ? 'Player 2 (O)' : 'Player 1 (X)';
+          _winner = _isPlayer1Turn ? 'Player 2' : 'Player 1';
         });
-        _showWinnerDialog(_winner);
+        _showWinnerDialog(_isPlayer1Turn ? 'Player 2' : 'Player 1');
       } else if (_isBoardFull()) {
         setState(() {
           _winner = 'Draw';
@@ -117,17 +143,21 @@ class _GameScreenWithFriendState extends State<GameScreenWithFriend> {
     }
   }
 
-  bool _checkWinner() {
+  bool _checkWinner(String side) {
     List<List<int>> winPatterns = [
-      [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
-      [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
-      [0, 4, 8], [2, 4, 6], // Diagonals
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6],
     ];
-
     for (var pattern in winPatterns) {
-      if (_board[pattern[0]] == _board[pattern[1]] &&
-          _board[pattern[1]] == _board[pattern[2]] &&
-          _board[pattern[0]] != '') {
+      if (_board[pattern[0]] == side &&
+          _board[pattern[1]] == side &&
+          _board[pattern[2]] == side) {
         return true;
       }
     }
@@ -135,39 +165,79 @@ class _GameScreenWithFriendState extends State<GameScreenWithFriend> {
   }
 
   bool _isBoardFull() {
-    return _board.every((spot) => spot.isNotEmpty);
+    return !_board.contains('');
   }
 
-  void _showWinnerDialog(String winner) {
+  void _showWinnerDialog(String winner) async {
+    await playGameOverSound(); // Ensure the sound plays before showing dialog
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: CommonColors.primaryColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(winner),
+              Text(
+                winner,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
               SizedBox(
-                height: 150,
+                height: 120,
                 child: Lottie.asset("assets/gameover_animation.json"),
               ),
             ],
           ),
           actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                _restartGame();
-              },
-              child: const Text('Restart'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: CommonColors.primaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                  onPressed: () {
+                    playGameStartSound();
+                    Navigator.pop(context);
+                    _restartGame();
+                  },
+                  child: const Text('Restart'),
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: CommonColors.primaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                  onPressed: () {
+                    playButtonTapSound();
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                  },
+                  child: const Text('End Game'),
+                ),
+              ],
             ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.pop(context);
-              },
-              child: const Text('End Game'),
-            ),
+            const SizedBox(height: 10),
           ],
         );
       },
@@ -179,22 +249,61 @@ class _GameScreenWithFriendState extends State<GameScreenWithFriend> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Are you sure?'),
-          content: const Text('Do you want to restart the game?'),
+          backgroundColor: CommonColors.primaryColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: const Center(
+            child: Text(
+              textAlign: TextAlign.center,
+              'Are you sure to restart the game?',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
           actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                _restartGame();
-              },
-              child: const Text('Yes'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: CommonColors.primaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                  onPressed: () {
+                    playGameStartSound();
+                    Navigator.pop(context);
+                    _restartGame();
+                  },
+                  child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: Text('Yes')),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: CommonColors.primaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                  onPressed: () {
+                    playButtonTapSound();
+                    Navigator.pop(context);
+                  },
+                  child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: Text('No')),
+                ),
+              ],
             ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('No'),
-            ),
+            const SizedBox(height: 10),
           ],
         );
       },
@@ -206,22 +315,61 @@ class _GameScreenWithFriendState extends State<GameScreenWithFriend> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Are you sure?'),
-          content: const Text('Do you want to end the game?'),
+          backgroundColor: CommonColors.primaryColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: const Center(
+            child: Text(
+              textAlign: TextAlign.center,
+              'Are you sure you want to end the game?',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
           actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.pop(context);
-              },
-              child: const Text('Yes'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: CommonColors.primaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                  onPressed: () {
+                    playButtonTapSound();
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                  },
+                  child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: Text('Yes')),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: CommonColors.primaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                  onPressed: () {
+                    playButtonTapSound();
+                    Navigator.pop(context);
+                  },
+                  child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: Text('No')),
+                ),
+              ],
             ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('No'),
-            ),
+            const SizedBox(height: 10),
           ],
         );
       },
@@ -232,7 +380,7 @@ class _GameScreenWithFriendState extends State<GameScreenWithFriend> {
     setState(() {
       _board = List.filled(9, '');
       _winner = '';
-      _isPlayerOneTurn = true;
+      _isPlayer1Turn = true; // Start with player 1
     });
   }
 }
