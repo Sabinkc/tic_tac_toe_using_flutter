@@ -18,6 +18,8 @@ class _GameScreenWithAiState extends State<GameScreenWithAi> {
   List<String> _board = List.filled(9, ''); // Empty board
   bool _isPlayerTurn = true; // Initially set to player's turn
   String _winner = '';
+  List<int> _winningCombination = [];
+  List<int> _highlightedCells = []; // To store indices of winning cells
 
   final AudioPlayer _audioPlayer = AudioPlayer();
 
@@ -78,7 +80,12 @@ class _GameScreenWithAiState extends State<GameScreenWithAi> {
                     onTap: () => _onTap(index),
                     child: Container(
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white, width: 2),
+                        border: Border.all(
+                          color: _winningCombination.contains(index)
+                              ? Colors.green
+                              : Colors.white,
+                          width: 3, // Make the border thicker to highlight
+                        ),
                         color: Colors.transparent,
                       ),
                       child: Center(
@@ -234,9 +241,11 @@ class _GameScreenWithAiState extends State<GameScreenWithAi> {
       if (_board[pattern[0]] == side &&
           _board[pattern[1]] == side &&
           _board[pattern[2]] == side) {
+        _winningCombination = pattern; // Save the winning combination
         return true;
       }
     }
+    _winningCombination.clear(); // Clear the list if no winner
     return false;
   }
 
@@ -456,9 +465,11 @@ class _GameScreenWithAiState extends State<GameScreenWithAi> {
 
   void _restartGame() {
     setState(() {
-      _board = List.filled(9, '');
-      _isPlayerTurn = true;
-      _winner = '';
+      _board = List.filled(9, ''); // Reset the board
+      _isPlayerTurn = true; // Set to player's turn
+      _winner = ''; // Reset winner
+      _highlightedCells = []; // Clear the highlighted cells
+      _winningCombination = []; // Clear the winning combination
     });
   }
 }

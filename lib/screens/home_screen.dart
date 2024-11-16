@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tic_tac_toe/common/colors.dart';
 import 'package:tic_tac_toe/common/common_button.dart';
+import 'package:tic_tac_toe/screens/field_screen_for_ai.dart';
 import 'package:tic_tac_toe/screens/field_screen_for_friend.dart';
 import 'package:tic_tac_toe/screens/game_screen_with_friend.dart';
 import 'package:tic_tac_toe/screens/side_selecting_screen.dart';
@@ -112,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Navigator.push(
                         context,
                         CupertinoPageRoute(
-                          builder: (context) => const SideSelectingScreen(),
+                          builder: (context) => const FieldScreenForAi(),
                         ),
                       );
                     },
