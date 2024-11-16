@@ -16,6 +16,7 @@ class _GameScreenWithFriendState extends State<GameScreenWithFriend> {
   List<String> _board = List.filled(9, ''); // Empty board
   bool _isPlayer1Turn = true; // Initially set to Player 1's turn
   String _winner = '';
+  List<int> _winningIndices = [];
 
   final AudioPlayer _audioPlayer = AudioPlayer();
 
@@ -58,7 +59,9 @@ class _GameScreenWithFriendState extends State<GameScreenWithFriend> {
           children: [
             Text(
               _winner.isEmpty
-                  ? (_isPlayer1Turn ? "Player 1's turn!" : "Player 2's turn!")
+                  ? (_isPlayer1Turn
+                      ? "Player(x) 1's turn!"
+                      : "Player(o) 2's turn!")
                   : 'Winner: $_winner',
               style: const TextStyle(color: Colors.white, fontSize: 30),
             ),
@@ -76,7 +79,12 @@ class _GameScreenWithFriendState extends State<GameScreenWithFriend> {
                     onTap: () => _onTap(index),
                     child: Container(
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white, width: 2),
+                        border: Border.all(
+                          color: _winningIndices.contains(index)
+                              ? Colors.green
+                              : Colors.white,
+                          width: 3,
+                        ),
                         color: Colors.transparent,
                       ),
                       child: Center(
@@ -129,8 +137,10 @@ class _GameScreenWithFriendState extends State<GameScreenWithFriend> {
         _board[index] = _isPlayer1Turn ? 'X' : 'O';
         _isPlayer1Turn = !_isPlayer1Turn;
       });
-      if (_checkWinner(_board[index])) {
+      final winnerPattern = _checkWinner(_board[index]);
+      if (winnerPattern != null) {
         setState(() {
+          _winningIndices = winnerPattern;
           _winner = _isPlayer1Turn ? 'Player 2' : 'Player 1';
         });
         _showWinnerDialog(_isPlayer1Turn ? 'Player 2' : 'Player 1');
@@ -143,7 +153,7 @@ class _GameScreenWithFriendState extends State<GameScreenWithFriend> {
     }
   }
 
-  bool _checkWinner(String side) {
+  List<int>? _checkWinner(String side) {
     List<List<int>> winPatterns = [
       [0, 1, 2],
       [3, 4, 5],
@@ -158,10 +168,10 @@ class _GameScreenWithFriendState extends State<GameScreenWithFriend> {
       if (_board[pattern[0]] == side &&
           _board[pattern[1]] == side &&
           _board[pattern[2]] == side) {
-        return true;
+        return pattern;
       }
     }
-    return false;
+    return null;
   }
 
   bool _isBoardFull() {
@@ -381,6 +391,7 @@ class _GameScreenWithFriendState extends State<GameScreenWithFriend> {
       _board = List.filled(9, '');
       _winner = '';
       _isPlayer1Turn = true; // Start with player 1
+      _winningIndices = [];
     });
   }
 }

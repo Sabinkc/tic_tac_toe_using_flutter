@@ -60,7 +60,7 @@ class SideSelectingScreen extends StatelessWidget {
                     context,
                     CupertinoPageRoute(
                         builder: (context) =>
-                            GameScreenWithAi(playerSide: 'X')));
+                            const GameScreenWithAi(playerSide: 'X')));
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -90,7 +90,7 @@ class SideSelectingScreen extends StatelessWidget {
                     context,
                     CupertinoPageRoute(
                         builder: (context) =>
-                            GameScreenWithAi(playerSide: 'O')));
+                            const GameScreenWithAi(playerSide: 'O')));
               },
               child: Container(
                 decoration: BoxDecoration(

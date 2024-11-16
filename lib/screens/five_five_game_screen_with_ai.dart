@@ -5,17 +5,17 @@ import 'package:lottie/lottie.dart';
 import 'package:tic_tac_toe/common/colors.dart';
 import 'package:tic_tac_toe/common/common_button.dart';
 
-class GameScreenWithAi extends StatefulWidget {
+class FiveFiveGameScreenWithAi extends StatefulWidget {
   final String playerSide; // Side selected by the player ("X" or "O")
 
-  const GameScreenWithAi({super.key, required this.playerSide});
+  const FiveFiveGameScreenWithAi({super.key, required this.playerSide});
 
   @override
   _GameScreenWithAiState createState() => _GameScreenWithAiState();
 }
 
-class _GameScreenWithAiState extends State<GameScreenWithAi> {
-  List<String> _board = List.filled(9, ''); // Empty board
+class _GameScreenWithAiState extends State<FiveFiveGameScreenWithAi> {
+  List<String> _board = List.filled(25, ''); // 5x5 grid with 25 cells
   bool _isPlayerTurn = true; // Initially set to player's turn
   String _winner = '';
 
@@ -69,9 +69,9 @@ class _GameScreenWithAiState extends State<GameScreenWithAi> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: GridView.builder(
                 shrinkWrap: true,
-                itemCount: 9,
+                itemCount: 25, // 5x5 grid
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
+                  crossAxisCount: 5, // 5 columns for a 5x5 grid
                 ),
                 itemBuilder: (context, index) {
                   return GestureDetector(
@@ -221,19 +221,43 @@ class _GameScreenWithAiState extends State<GameScreenWithAi> {
 
   bool _checkWinner(String side) {
     List<List<int>> winPatterns = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8],
-      [0, 4, 8],
-      [2, 4, 6],
+      // Horizontal
+      [0, 1, 2, 3],
+      [1, 2, 3, 4],
+      [5, 6, 7, 8],
+      [6, 7, 8, 9],
+      [10, 11, 12, 13],
+      [11, 12, 13, 14],
+      [15, 16, 17, 18],
+      [16, 17, 18, 19],
+      [20, 21, 22, 23],
+      [21, 22, 23, 24],
+      // Vertical
+      [0, 5, 10, 15],
+      [1, 6, 11, 16],
+      [2, 7, 12, 17],
+      [3, 8, 13, 18],
+      [4, 9, 14, 19],
+      [5, 10, 15, 20],
+      [6, 11, 16, 21],
+      [7, 12, 17, 22],
+      [8, 13, 18, 23],
+      [9, 14, 19, 24],
+      // Diagonal
+      [0, 6, 12, 18],
+      [1, 7, 13, 19],
+      [2, 8, 14, 20],
+      [3, 9, 15, 21],
+      [4, 10, 16, 22],
+      [20, 16, 12, 8],
+      [21, 17, 13, 9],
+      [22, 18, 14, 10],
+      [23, 19, 15, 11],
+      [24, 20, 16, 12],
     ];
+
     for (var pattern in winPatterns) {
-      if (_board[pattern[0]] == side &&
-          _board[pattern[1]] == side &&
-          _board[pattern[2]] == side) {
+      if (pattern.every((index) => _board[index] == side)) {
         return true;
       }
     }
@@ -241,83 +265,44 @@ class _GameScreenWithAiState extends State<GameScreenWithAi> {
   }
 
   bool _isBoardFull() {
-    return !_board.contains('');
+    return _board.every((cell) => cell.isNotEmpty);
   }
 
-  void _showWinnerDialog(String winner) async {
-    await playGameOverSound(); // Ensure the sound plays before showing dialog
-
+  void _showWinnerDialog(String winner) {
+    playGameOverSound();
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: CommonColors.primaryColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                winner,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                height: 120,
-                child: Lottie.asset("assets/gameover_animation.json"),
-              ),
-            ],
-          ),
-          actions: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: CommonColors.primaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                  ),
-                  onPressed: () {
-                    playGameStartSound();
-                    Navigator.pop(context);
-                    _restartGame();
-                  },
-                  child: const Text('Restart'),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: CommonColors.primaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                  ),
-                  onPressed: () {
-                    playButtonTapSound();
-                    Navigator.pop(context);
-                    Navigator.pop(context);
-                  },
-                  child: const Text('End Game'),
-                ),
-              ],
+          title: Text('Game Over'),
+          content: Text('$winner wins!'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _resetGame();
+              },
+              child: const Text('Play Again'),
             ),
-            const SizedBox(height: 10),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.pop(context); // Go back to the previous screen
+              },
+              child: const Text('Exit'),
+            ),
           ],
         );
       },
     );
+  }
+
+  void _resetGame() {
+    setState(() {
+      _board = List.filled(25, '');
+      _isPlayerTurn = true;
+      _winner = '';
+    });
   }
 
   void _showRestartConfirmationDialog() {
@@ -325,61 +310,22 @@ class _GameScreenWithAiState extends State<GameScreenWithAi> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: CommonColors.primaryColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          title: const Center(
-            child: Text(
-              textAlign: TextAlign.center,
-              'Are you sure to restart the game?',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+          title: const Text('Restart Game'),
+          content: const Text('Are you sure you want to restart the game?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _resetGame();
+              },
+              child: const Text('Yes'),
             ),
-          ),
-          actions: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: CommonColors.primaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                  ),
-                  onPressed: () {
-                    playGameStartSound();
-                    Navigator.pop(context);
-                    _restartGame();
-                  },
-                  child: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Text('Yes')),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: CommonColors.primaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                  ),
-                  onPressed: () {
-                    playButtonTapSound();
-                    Navigator.pop(context);
-                  },
-                  child: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Text('No')),
-                ),
-              ],
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('No'),
             ),
-            const SizedBox(height: 10),
           ],
         );
       },
@@ -391,74 +337,25 @@ class _GameScreenWithAiState extends State<GameScreenWithAi> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: CommonColors.primaryColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          title: const Center(
-            child: Text(
-              textAlign: TextAlign.center,
-              'Are you sure you want to end the game?',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+          title: const Text('End Game'),
+          content: const Text('Are you sure you want to end the game?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.pop(context); // Go back to the previous screen
+              },
+              child: const Text('Yes'),
             ),
-          ),
-          actions: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: CommonColors.primaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                  ),
-                  onPressed: () {
-                    playButtonTapSound();
-                    Navigator.pop(context);
-                    Navigator.pop(context);
-                  },
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Text('Yes'),
-                  ),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: CommonColors.primaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                  ),
-                  onPressed: () {
-                    playButtonTapSound();
-                    Navigator.pop(context);
-                  },
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Text('No'),
-                  ),
-                ),
-              ],
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('No'),
             ),
-            const SizedBox(height: 10),
           ],
         );
       },
     );
-  }
-
-  void _restartGame() {
-    setState(() {
-      _board = List.filled(9, '');
-      _isPlayerTurn = true;
-      _winner = '';
-    });
   }
 }
