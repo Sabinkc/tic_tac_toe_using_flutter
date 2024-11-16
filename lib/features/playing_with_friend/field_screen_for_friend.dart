@@ -3,8 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tic_tac_toe/common/colors.dart';
 import 'package:tic_tac_toe/common/common_button.dart';
-import 'package:tic_tac_toe/screens/five_five_game_screen_with_friend.dart';
-import 'package:tic_tac_toe/screens/game_screen_with_friend.dart';
+import 'package:tic_tac_toe/features/playing_with_friend/five_five_game_screen_with_friend.dart';
+import 'package:tic_tac_toe/features/playing_with_friend/game_screen_with_friend.dart';
 
 class FieldScreenForFriend extends StatelessWidget {
   const FieldScreenForFriend({super.key});

@@ -3,10 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tic_tac_toe/common/colors.dart';
 import 'package:tic_tac_toe/common/common_button.dart';
-import 'package:tic_tac_toe/screens/five_five_game_screen_with_friend.dart';
-import 'package:tic_tac_toe/screens/five_five_side_selecting_screen.dart';
-import 'package:tic_tac_toe/screens/game_screen_with_friend.dart';
-import 'package:tic_tac_toe/screens/side_selecting_screen.dart';
+import 'package:tic_tac_toe/features/playing_with_friend/five_five_game_screen_with_friend.dart';
+import 'package:tic_tac_toe/features/playing%20with%20ai/five_five_side_selecting_screen.dart';
+import 'package:tic_tac_toe/features/playing_with_friend/game_screen_with_friend.dart';
+import 'package:tic_tac_toe/features/playing%20with%20ai/side_selecting_screen.dart';
 
 class FieldScreenForAi extends StatelessWidget {
   const FieldScreenForAi({super.key});

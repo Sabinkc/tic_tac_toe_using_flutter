@@ -5,18 +5,18 @@ import 'package:lottie/lottie.dart';
 import 'package:tic_tac_toe/common/colors.dart';
 import 'package:tic_tac_toe/common/common_button.dart';
 
-class GameScreenWithFriend extends StatefulWidget {
-  const GameScreenWithFriend({super.key});
+class FiveFiveGameScreenWithFriend extends StatefulWidget {
+  const FiveFiveGameScreenWithFriend({super.key});
 
   @override
   _GameScreenWithFriendState createState() => _GameScreenWithFriendState();
 }
 
-class _GameScreenWithFriendState extends State<GameScreenWithFriend> {
-  List<String> _board = List.filled(9, ''); // Empty board
+class _GameScreenWithFriendState extends State<FiveFiveGameScreenWithFriend> {
+  List<String> _board = List.filled(25, ''); // 5x5 board, so 25 cells
   bool _isPlayer1Turn = true; // Initially set to Player 1's turn
   String _winner = '';
-  List<int> _winningIndices = [];
+  Set<int> _winningIndices = {};
 
   final AudioPlayer _audioPlayer = AudioPlayer();
 
@@ -63,16 +63,16 @@ class _GameScreenWithFriendState extends State<GameScreenWithFriend> {
                       ? "Player(x) 1's turn!"
                       : "Player(o) 2's turn!")
                   : 'Winner: $_winner',
-              style: const TextStyle(color: Colors.white, fontSize: 30),
+              style: const TextStyle(color: Colors.white, fontSize: 35),
             ),
             const SizedBox(height: 50),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: GridView.builder(
                 shrinkWrap: true,
-                itemCount: 9,
+                itemCount: 25, // 5x5 grid
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
+                  crossAxisCount: 5, // 5 columns for 5x5 grid
                 ),
                 itemBuilder: (context, index) {
                   return GestureDetector(
@@ -81,7 +81,7 @@ class _GameScreenWithFriendState extends State<GameScreenWithFriend> {
                       decoration: BoxDecoration(
                         border: Border.all(
                           color: _winningIndices.contains(index)
-                              ? Colors.green
+                              ? Colors.green // Highlight winning cells
                               : Colors.white,
                           width: 3,
                         ),
@@ -90,9 +90,13 @@ class _GameScreenWithFriendState extends State<GameScreenWithFriend> {
                       child: Center(
                         child: Text(
                           _board[index],
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 36,
+                          style: TextStyle(
+                            color: _board[index] == 'X'
+                                ? Colors.red // Red for 'X'
+                                : _board[index] == 'O'
+                                    ? Colors.yellow // Yellow for 'O'
+                                    : Colors.white, // Default color for empty
+                            fontSize: 50,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -131,17 +135,18 @@ class _GameScreenWithFriendState extends State<GameScreenWithFriend> {
   }
 
   void _onTap(int index) {
-    if (_board[index].isEmpty) {
+    if (_board[index].isEmpty && _winner.isEmpty) {
       playButtonTapSound(); // Play sound on player tap
       setState(() {
         _board[index] = _isPlayer1Turn ? 'X' : 'O';
         _isPlayer1Turn = !_isPlayer1Turn;
       });
-      final winnerPattern = _checkWinner(_board[index]);
+
+      List<int>? winnerPattern = _checkWinner(_board[index]);
       if (winnerPattern != null) {
         setState(() {
-          _winningIndices = winnerPattern;
           _winner = _isPlayer1Turn ? 'Player 2' : 'Player 1';
+          _winningIndices = Set.from(winnerPattern); // Store winning indices
         });
         _showWinnerDialog(_isPlayer1Turn ? 'Player 2' : 'Player 1');
       } else if (_isBoardFull()) {
@@ -154,21 +159,45 @@ class _GameScreenWithFriendState extends State<GameScreenWithFriend> {
   }
 
   List<int>? _checkWinner(String side) {
-    List<List<int>> winPatterns = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8],
-      [0, 4, 8],
-      [2, 4, 6],
-    ];
+    List<List<int>> winPatterns = [];
+
+    // Check rows and columns for a 4-match
+    for (int i = 0; i < 5; i++) {
+      for (int j = 0; j <= 1; j++) {
+        // Horizontal
+        winPatterns
+            .add([i * 5 + j, i * 5 + j + 1, i * 5 + j + 2, i * 5 + j + 3]);
+        // Vertical
+        winPatterns.add(
+            [j * 5 + i, (j + 1) * 5 + i, (j + 2) * 5 + i, (j + 3) * 5 + i]);
+      }
+    }
+
+    // Check diagonals for a 4-match
+    for (int i = 0; i <= 1; i++) {
+      for (int j = 0; j <= 1; j++) {
+        winPatterns.add([
+          i * 5 + j,
+          (i + 1) * 5 + j + 1,
+          (i + 2) * 5 + j + 2,
+          (i + 3) * 5 + j + 3
+        ]);
+        winPatterns.add([
+          i * 5 + 4 - j,
+          (i + 1) * 5 + 3 - j,
+          (i + 2) * 5 + 2 - j,
+          (i + 3) * 5 + 1 - j
+        ]);
+      }
+    }
+
+    // Check all win patterns
     for (var pattern in winPatterns) {
       if (_board[pattern[0]] == side &&
           _board[pattern[1]] == side &&
-          _board[pattern[2]] == side) {
-        return pattern;
+          _board[pattern[2]] == side &&
+          _board[pattern[3]] == side) {
+        return pattern; // Return the winning pattern
       }
     }
     return null;
@@ -193,7 +222,7 @@ class _GameScreenWithFriendState extends State<GameScreenWithFriend> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                winner,
+                "Winner: $winner",
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 28,
@@ -227,7 +256,7 @@ class _GameScreenWithFriendState extends State<GameScreenWithFriend> {
                   },
                   child: const Text('Restart'),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 ElevatedButton(
@@ -291,9 +320,7 @@ class _GameScreenWithFriendState extends State<GameScreenWithFriend> {
                     Navigator.pop(context);
                     _restartGame();
                   },
-                  child: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Text('Yes')),
+                  child: const Text('Yes'),
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -308,16 +335,25 @@ class _GameScreenWithFriendState extends State<GameScreenWithFriend> {
                     Navigator.pop(context);
                   },
                   child: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      padding: EdgeInsets.symmetric(horizontal: 5),
                       child: Text('No')),
                 ),
               ],
             ),
-            const SizedBox(height: 10),
           ],
         );
       },
     );
+  }
+
+  void _restartGame() {
+    setState(() {
+      _board = List.filled(25, ''); // Reset the board
+      _winner = '';
+      _isPlayer1Turn = true; // Reset to Player 1's turn
+      _winningIndices
+          .clear(); // Clear the winning indices (highlighted borders)
+    });
   }
 
   void _showEndGameConfirmationDialog() {
@@ -357,9 +393,7 @@ class _GameScreenWithFriendState extends State<GameScreenWithFriend> {
                     Navigator.pop(context);
                     Navigator.pop(context);
                   },
-                  child: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Text('Yes')),
+                  child: const Text('Yes'),
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -374,24 +408,14 @@ class _GameScreenWithFriendState extends State<GameScreenWithFriend> {
                     Navigator.pop(context);
                   },
                   child: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      padding: EdgeInsets.symmetric(horizontal: 5),
                       child: Text('No')),
                 ),
               ],
             ),
-            const SizedBox(height: 10),
           ],
         );
       },
     );
-  }
-
-  void _restartGame() {
-    setState(() {
-      _board = List.filled(9, '');
-      _winner = '';
-      _isPlayer1Turn = true; // Start with player 1
-      _winningIndices = [];
-    });
   }
 }

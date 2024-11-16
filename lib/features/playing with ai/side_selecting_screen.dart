@@ -2,11 +2,10 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tic_tac_toe/common/colors.dart';
-import 'package:tic_tac_toe/screens/five_five_game_screen_with_ai.dart';
-import 'package:tic_tac_toe/screens/game_screen_with_ai.dart';
+import 'package:tic_tac_toe/features/playing%20with%20ai/game_screen_with_ai.dart';
 
-class FiveFiveSideSelectingScreen extends StatelessWidget {
-  const FiveFiveSideSelectingScreen({super.key});
+class SideSelectingScreen extends StatelessWidget {
+  const SideSelectingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +60,7 @@ class FiveFiveSideSelectingScreen extends StatelessWidget {
                     context,
                     CupertinoPageRoute(
                         builder: (context) =>
-                            const FiveFiveGameScreenWithAi(playerSide: 'X')));
+                            const GameScreenWithAi(playerSide: 'X')));
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -91,7 +90,7 @@ class FiveFiveSideSelectingScreen extends StatelessWidget {
                     context,
                     CupertinoPageRoute(
                         builder: (context) =>
-                            const FiveFiveGameScreenWithAi(playerSide: 'O')));
+                            const GameScreenWithAi(playerSide: 'O')));
               },
               child: Container(
                 decoration: BoxDecoration(

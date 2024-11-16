@@ -3,8 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tic_tac_toe/common/colors.dart';
 import 'package:tic_tac_toe/common/common_button.dart';
-import 'package:tic_tac_toe/screens/field_screen_for_ai.dart';
-import 'package:tic_tac_toe/screens/field_screen_for_friend.dart';
+import 'package:tic_tac_toe/features/playing%20with%20ai/field_screen_for_ai.dart';
+import 'package:tic_tac_toe/features/playing_with_friend/field_screen_for_friend.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

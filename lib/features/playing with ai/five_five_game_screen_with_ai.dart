@@ -488,9 +488,11 @@ class _GameScreenWithAiState extends State<FiveFiveGameScreenWithAi> {
           children: [
             Text(
               _winner.isEmpty
-                  ? (_isPlayerTurn ? "Your turn!" : "AI's turn!")
+                  ? (_isPlayerTurn
+                      ? "Your turn(${widget.playerSide})!"
+                      : "AI's turn (${widget.playerSide == 'X' ? 'O' : 'X'})!")
                   : 'Winner: $_winner',
-              style: const TextStyle(color: Colors.white, fontSize: 30),
+              style: const TextStyle(color: Colors.white, fontSize: 35),
             ),
             const SizedBox(height: 50),
             Padding(
@@ -510,16 +512,20 @@ class _GameScreenWithAiState extends State<FiveFiveGameScreenWithAi> {
                           color: _winningIndices.contains(index)
                               ? Colors.green
                               : Colors.white,
-                          width: 2,
+                          width: 3,
                         ),
                         color: Colors.transparent,
                       ),
                       child: Center(
                         child: Text(
                           _board[index],
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 36,
+                          style: TextStyle(
+                            color: _board[index] == 'X'
+                                ? Colors.red // Red for 'X'
+                                : _board[index] == 'O'
+                                    ? Colors.yellow // Yellow for 'O'
+                                    : Colors.white, // Default color for empty
+                            fontSize: 50,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -776,7 +782,7 @@ class _GameScreenWithAiState extends State<FiveFiveGameScreenWithAi> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                winner,
+                "Winner: $winner",
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 28,
