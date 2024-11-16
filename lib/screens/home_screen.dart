@@ -5,8 +5,6 @@ import 'package:tic_tac_toe/common/colors.dart';
 import 'package:tic_tac_toe/common/common_button.dart';
 import 'package:tic_tac_toe/screens/field_screen_for_ai.dart';
 import 'package:tic_tac_toe/screens/field_screen_for_friend.dart';
-import 'package:tic_tac_toe/screens/game_screen_with_friend.dart';
-import 'package:tic_tac_toe/screens/side_selecting_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
