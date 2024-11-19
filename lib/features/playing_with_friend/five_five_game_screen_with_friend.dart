@@ -494,10 +494,10 @@ class _GameScreenWithFriendState extends State<FiveFiveGameScreenWithFriend> {
               style: TextStyle(
                 color: Colors.white,
                 fontSize: screenHeight *
-                    0.07, // Maintain text size responsive to screen width
+                    0.03, // Maintain text size responsive to screen width
               ),
             ),
-            SizedBox(height: screenHeight * 0.05),
+            SizedBox(height: screenHeight * 0.03),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Container(
@@ -548,7 +548,7 @@ class _GameScreenWithFriendState extends State<FiveFiveGameScreenWithFriend> {
                 ),
               ),
             ),
-            SizedBox(height: screenHeight * 0.03),
+            SizedBox(height: screenHeight * 0.02),
             CommonButton(
                 title: "Restart",
                 buttonColor: Colors.transparent,

@@ -463,6 +463,8 @@ class _GameScreenWithAiState extends State<FiveFiveGameScreenWithAi> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.purple.withOpacity(0.5),
@@ -492,67 +494,61 @@ class _GameScreenWithAiState extends State<FiveFiveGameScreenWithAi> {
                       ? "Your turn(${widget.playerSide})!"
                       : "AI's turn (${widget.playerSide == 'X' ? 'O' : 'X'})!")
                   : 'Winner: $_winner',
-              style: const TextStyle(color: Colors.white, fontSize: 35),
+              style:
+                  TextStyle(color: Colors.white, fontSize: screenHeight * 0.03),
             ),
-            const SizedBox(height: 50),
-            LayoutBuilder(
-              builder: (context, constraints) {
-                // Calculate the size of each cell based on the screen size
-                double cellSize =
-                    min(constraints.maxWidth, constraints.maxHeight) / 5;
-
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: GridView.builder(
-                    shrinkWrap: true,
-                    physics:
-                        const NeverScrollableScrollPhysics(), // Disable scrolling
-                    itemCount: 25, // 5x5 grid (25 cells)
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 5, // 5 columns for 5x5 grid
-                      crossAxisSpacing: 0, // No spacing between items
-                      mainAxisSpacing: 0, // No spacing between items
-                    ),
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () => _onTap(index),
-                        child: Container(
-                          width: cellSize,
-                          height: cellSize,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: _winningIndices.contains(index)
-                                  ? Colors.green // Highlight winning cells
-                                  : Colors.white,
-                              width: 3,
-                            ),
-                            color: Colors.transparent,
+            SizedBox(height: screenHeight * 0.04),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Container(
+                height: screenHeight * 0.45,
+                child: GridView.builder(
+                  shrinkWrap: true,
+                  physics:
+                      const NeverScrollableScrollPhysics(), // Disable scrolling
+                  itemCount: 25, // 5x5 grid (25 cells)
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 5, // 5 columns for 5x5 grid
+                    crossAxisSpacing: 0, // No spacing between items
+                    mainAxisSpacing: 0,
+                    childAspectRatio: screenWidth /
+                        (screenHeight * 0.45), // No spacing between items
+                  ),
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () => _onTap(index),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: _winningIndices.contains(index)
+                                ? Colors.green // Highlight winning cells
+                                : Colors.white,
+                            width: 3,
                           ),
-                          child: Center(
-                            child: Text(
-                              _board[index],
-                              style: TextStyle(
-                                color: _board[index] == 'X'
-                                    ? Colors.red // Red for 'X'
-                                    : _board[index] == 'O'
-                                        ? Colors.yellow // Yellow for 'O'
-                                        : Colors
-                                            .white, // Default color for empty
-                                fontSize: cellSize *
-                                    0.4, // Scale text size based on cell size
-                                fontWeight: FontWeight.bold,
-                              ),
+                          color: Colors.transparent,
+                        ),
+                        child: Center(
+                          child: Text(
+                            _board[index],
+                            style: TextStyle(
+                              color: _board[index] == 'X'
+                                  ? Colors.red // Red for 'X'
+                                  : _board[index] == 'O'
+                                      ? Colors.yellow // Yellow for 'O'
+                                      : Colors.white, // Default color for empty
+                              fontSize: screenHeight *
+                                  0.04, // Scale text size based on cell size
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
-                      );
-                    },
-                  ),
-                );
-              },
+                      ),
+                    );
+                  },
+                ),
+              ),
             ),
-            const SizedBox(height: 50),
+            SizedBox(height: screenHeight * 0.01),
             CommonButton(
                 title: "Restart",
                 buttonColor: Colors.transparent,
@@ -562,8 +558,8 @@ class _GameScreenWithAiState extends State<FiveFiveGameScreenWithAi> {
                   playButtonTapSound();
                   _showRestartConfirmationDialog();
                 }),
-            const SizedBox(
-              height: 20,
+            SizedBox(
+              height: screenHeight * 0.02,
             ),
             CommonButton(
                 title: "End Game",

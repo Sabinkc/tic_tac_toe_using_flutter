@@ -473,10 +473,10 @@ class _GameScreenWithFriendState extends State<GameScreenWithFriend> {
                   : 'Winner: $_winner',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: screenHeight * 0.04,
+                fontSize: screenHeight * 0.03,
               ),
             ),
-            SizedBox(height: screenHeight * 0.08),
+            SizedBox(height: screenHeight * 0.04),
             // Responsive GridView
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -526,7 +526,7 @@ class _GameScreenWithFriendState extends State<GameScreenWithFriend> {
                 ),
               ),
             ),
-            SizedBox(height: screenHeight * 0.07),
+            SizedBox(height: screenHeight * 0.06),
             CommonButton(
               title: "Restart",
               buttonColor: Colors.transparent,

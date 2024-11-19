@@ -521,10 +521,7 @@ class _GameScreenWithAiState extends State<GameScreenWithAi> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    double gridSize = screenWidth * 0.75; // Grid takes 75% of the screen width
-    double fontSize = screenWidth * 0.12; // Font size based on screen width
-    double buttonWidth =
-        screenWidth * 0.45; // Buttons' width relative to screen width
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.purple.withOpacity(0.5),
@@ -557,67 +554,59 @@ class _GameScreenWithAiState extends State<GameScreenWithAi> {
               style: TextStyle(
                 color: Colors.white,
                 fontSize:
-                    screenWidth * 0.1, // Keep font size fixed, not responsive
+                    screenHeight * 0.03, // Keep font size fixed, not responsive
               ),
             ),
-            SizedBox(height: screenHeight * 0.08),
-            LayoutBuilder(
-              builder: (context, constraints) {
-                // Calculate the size of each cell based on the screen size
-                double cellSize =
-                    min(constraints.maxWidth, constraints.maxHeight) / 3;
-
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: GridView.builder(
-                    shrinkWrap: true,
-                    itemCount: 9,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      childAspectRatio: 1,
-                      crossAxisSpacing: 0,
-                      mainAxisSpacing: 0, // Ensure the grid items are square
-                    ),
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () => _onTap(index),
-                        child: Container(
-                          width: cellSize,
-                          height: cellSize,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: _winningCombination.contains(index)
-                                  ? Colors.green
-                                  : Colors.white,
-                              width: 4,
-                            ),
-                            color: Colors.transparent,
+            SizedBox(height: screenHeight * 0.05),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Container(
+                height: screenHeight * 0.5,
+                child: GridView.builder(
+                  shrinkWrap: true,
+                  itemCount: 9,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    childAspectRatio: screenWidth / (screenHeight * 0.45),
+                    crossAxisSpacing: 0,
+                    mainAxisSpacing: 0,
+                    // Ensure the grid items are square
+                  ),
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () => _onTap(index),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: _winningCombination.contains(index)
+                                ? Colors.green
+                                : Colors.white,
+                            width: 4,
                           ),
-                          child: Center(
-                            child: Text(
-                              _board[index],
-                              style: TextStyle(
-                                color: _board[index] == 'X'
-                                    ? Colors.red // Red for 'X'
-                                    : _board[index] == 'O'
-                                        ? Colors.yellow // Yellow for 'O'
-                                        : Colors
-                                            .white, // Default color for empty
-                                fontSize: cellSize *
-                                    0.4, // Scale text size based on cell size
-                                fontWeight: FontWeight.bold,
-                              ),
+                          color: Colors.transparent,
+                        ),
+                        child: Center(
+                          child: Text(
+                            _board[index],
+                            style: TextStyle(
+                              color: _board[index] == 'X'
+                                  ? Colors.red // Red for 'X'
+                                  : _board[index] == 'O'
+                                      ? Colors.yellow // Yellow for 'O'
+                                      : Colors.white, // Default color for empty
+                              fontSize: screenHeight *
+                                  0.04, // Scale text size based on cell size
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
-                      );
-                    },
-                  ),
-                );
-              },
+                      ),
+                    );
+                  },
+                ),
+              ),
             ),
-            SizedBox(height: screenHeight * 0.05),
+            SizedBox(height: screenHeight * 0.01),
             CommonButton(
                 title: "Restart",
                 buttonColor: Colors.transparent,

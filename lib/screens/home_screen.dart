@@ -55,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         "o",
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: screenHeight * 0.3,
+                          fontSize: screenHeight * 0.25,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -63,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         "x",
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: screenHeight * 0.3,
+                          fontSize: screenHeight * 0.25,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -84,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Text(
                     "Choose a play mode",
                     style: TextStyle(
-                        color: Colors.white, fontSize: screenHeight * 0.07),
+                        color: Colors.white, fontSize: screenHeight * 0.03),
                   ),
                 );
               },

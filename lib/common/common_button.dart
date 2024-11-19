@@ -30,7 +30,7 @@ class CommonButton extends StatelessWidget {
         child: Center(
           child: Text(
             title,
-            style: TextStyle(color: titleColor, fontSize: screenHeight * 0.06),
+            style: TextStyle(color: titleColor, fontSize: screenHeight * 0.03),
           ),
         ),
       ),
