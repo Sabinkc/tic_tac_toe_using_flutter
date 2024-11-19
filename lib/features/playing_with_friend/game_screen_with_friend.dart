@@ -468,68 +468,63 @@ class _GameScreenWithFriendState extends State<GameScreenWithFriend> {
             Text(
               _winner.isEmpty
                   ? (_isPlayer1Turn
-                      ? "Player(x) 1's turn!"
-                      : "Player(o) 2's turn!")
+                      ? "Player (X) 1's turn!"
+                      : "Player (O) 2's turn!")
                   : 'Winner: $_winner',
-              style:
-                  TextStyle(color: Colors.white, fontSize: screenHeight * 0.04),
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: screenHeight * 0.04,
+              ),
             ),
             SizedBox(height: screenHeight * 0.08),
-            // Use LayoutBuilder to make the GridView responsive
-            LayoutBuilder(
-              builder: (context, constraints) {
-                // Calculate the size of each cell based on the screen size
-                double cellSize =
-                    min(constraints.maxWidth, constraints.maxHeight) / 3;
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: GridView.builder(
-                    shrinkWrap: true,
-                    itemCount: 9,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      childAspectRatio: 1,
-                      crossAxisSpacing: 0,
-                      mainAxisSpacing: 0,
-                    ),
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () => _onTap(index),
-                        child: Container(
-                          width: cellSize,
-                          height: cellSize,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: _winningIndices.contains(index)
-                                  ? Colors.green
-                                  : Colors.white,
-                              width: 4,
-                            ),
-                            color: Colors.transparent,
+            // Responsive GridView
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Container(
+                height: screenHeight * 0.45,
+                child: GridView.builder(
+                  itemCount: 9,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 0,
+                    mainAxisSpacing: 0,
+
+                    childAspectRatio: screenWidth /
+                        (screenHeight *
+                            0.45), // main factor of responsive container
+                  ),
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () => _onTap(index),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: _winningIndices.contains(index)
+                                ? Colors.green
+                                : Colors.white,
+                            width: 4,
                           ),
-                          child: Center(
-                            child: Text(
-                              _board[index],
-                              style: TextStyle(
-                                color: _board[index] == 'X'
-                                    ? Colors.red // Red for 'X'
-                                    : _board[index] == 'O'
-                                        ? Colors.yellow // Yellow for 'O'
-                                        : Colors
-                                            .white, // Default color for empty
-                                fontSize: cellSize *
-                                    0.4, // Scale text size based on cell size
-                                fontWeight: FontWeight.bold,
-                              ),
+                          color: Colors.transparent,
+                        ),
+                        child: Center(
+                          child: Text(
+                            _board[index],
+                            style: TextStyle(
+                              color: _board[index] == 'X'
+                                  ? Colors.red
+                                  : _board[index] == 'O'
+                                      ? Colors.yellow
+                                      : Colors.white,
+                              fontSize: screenHeight * 0.08,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
-                      );
-                    },
-                  ),
-                );
-              },
+                      ),
+                    );
+                  },
+                ),
+              ),
             ),
             SizedBox(height: screenHeight * 0.07),
             CommonButton(
