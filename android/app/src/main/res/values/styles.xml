@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Theme applied to the Android Window while the process is starting when the OS's Dark Mode setting is off -->
-    <style name="LaunchTheme"
-           parent="@android:style/Theme.Light.NoTitleBar">
+    <style name="LaunchTheme" parent="@android:style/Theme.Light.NoTitleBar">
         <!-- Set the splash screen background image -->
         <item name="android:windowBackground">@drawable/launch_background</item>
         <!-- Prevent forced dark mode to ensure the splash looks consistent -->
-        <item name="android:forceDarkAllowed">false</item>
         <!-- Fullscreen mode -->
-        <item name="android:windowFullscreen">true</item>
         <!-- Enable system bar background rendering -->
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <!-- Handle display cutouts for modern devices -->
+        <item name="android:forceDarkAllowed">false</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">false</item>
         <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
     </style>
     <!-- Theme applied once the Flutter app is initialized -->
-    <style name="NormalTheme"
-           parent="@android:style/Theme.Light.NoTitleBar">
+    <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
         <item name="android:windowBackground">?android:colorBackground</item>
     </style>
 </resources>

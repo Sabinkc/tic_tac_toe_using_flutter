@@ -11,7 +11,7 @@ class SplashIcon extends StatelessWidget {
         backgroundColor: CommonColors.primaryColor,
         body: Center(
           child: CustomPaint(
-            size: Size(150, 150), // Halved grid size
+            size: const Size(150, 150), // Halved grid size
             painter: TicTacToeSplashPainter(),
           ),
         ),

@@ -11,9 +11,11 @@ class FieldScreenForFriend extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AudioPlayer _audioPlayer = AudioPlayer();
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final AudioPlayer audioPlayer = AudioPlayer();
     Future playButtonTapSound() async {
-      await _audioPlayer.play(AssetSource("button_pressed.mp3"));
+      await audioPlayer.play(AssetSource("button_pressed.mp3"));
     }
 
     return Scaffold(
@@ -41,15 +43,16 @@ class FieldScreenForFriend extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const SizedBox(
-              height: 50,
+            SizedBox(
+              height: screenHeight * 0.1,
             ),
-            const Text(
+            Text(
               "Choose board size",
-              style: TextStyle(color: Colors.white, fontSize: 30),
+              style:
+                  TextStyle(color: Colors.white, fontSize: screenWidth * 0.09),
             ),
-            const SizedBox(
-              height: 20,
+            SizedBox(
+              height: screenHeight * 0.02,
             ),
             CommonButton(
               title: "3x3 board",
@@ -59,12 +62,12 @@ class FieldScreenForFriend extends StatelessWidget {
               onTap: () {
                 playButtonTapSound();
                 Navigator.push(context, CupertinoPageRoute(builder: (context) {
-                  return GameScreenWithFriend();
+                  return const GameScreenWithFriend();
                 }));
               },
             ),
-            const SizedBox(
-              height: 20,
+            SizedBox(
+              height: screenHeight * 0.015,
             ),
             CommonButton(
               title: "5x5 board",
@@ -74,7 +77,7 @@ class FieldScreenForFriend extends StatelessWidget {
               onTap: () {
                 playButtonTapSound();
                 Navigator.push(context, CupertinoPageRoute(builder: (context) {
-                  return FiveFiveGameScreenWithFriend();
+                  return const FiveFiveGameScreenWithFriend();
                 }));
               },
             ),

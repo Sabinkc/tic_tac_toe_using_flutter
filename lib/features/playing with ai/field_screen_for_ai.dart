@@ -13,9 +13,9 @@ class FieldScreenForAi extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AudioPlayer _audioPlayer = AudioPlayer();
+    final AudioPlayer audioPlayer = AudioPlayer();
     Future playButtonTapSound() async {
-      await _audioPlayer.play(AssetSource("button_pressed.mp3"));
+      await audioPlayer.play(AssetSource("button_pressed.mp3"));
     }
 
     return Scaffold(
@@ -61,7 +61,7 @@ class FieldScreenForAi extends StatelessWidget {
               onTap: () {
                 playButtonTapSound();
                 Navigator.push(context, CupertinoPageRoute(builder: (context) {
-                  return SideSelectingScreen();
+                  return const SideSelectingScreen();
                 }));
               },
             ),
@@ -76,7 +76,7 @@ class FieldScreenForAi extends StatelessWidget {
               onTap: () {
                 playButtonTapSound();
                 Navigator.push(context, CupertinoPageRoute(builder: (context) {
-                  return FiveFiveSideSelectingScreen();
+                  return const FiveFiveSideSelectingScreen();
                 }));
               },
             ),

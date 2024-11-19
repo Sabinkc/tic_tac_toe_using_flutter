@@ -16,6 +16,8 @@ class CommonButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -23,12 +25,12 @@ class CommonButton extends StatelessWidget {
             color: buttonColor,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(color: borderColor)),
-        height: 70,
-        width: 250,
+        height: screenHeight * 0.09,
+        width: screenWidth * 0.7,
         child: Center(
           child: Text(
             title,
-            style: TextStyle(color: titleColor, fontSize: 23),
+            style: TextStyle(color: titleColor, fontSize: screenWidth * 0.075),
           ),
         ),
       ),
