@@ -486,9 +486,12 @@ class _GameScreenWithFriendState extends State<GameScreenWithFriend> {
                   child: GridView.builder(
                     shrinkWrap: true,
                     itemCount: 9,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
-                      childAspectRatio: 1, // Ensure the grid items are square
+                      childAspectRatio: 1,
+                      crossAxisSpacing: 0,
+                      mainAxisSpacing: 0,
                     ),
                     itemBuilder: (context, index) {
                       return GestureDetector(
