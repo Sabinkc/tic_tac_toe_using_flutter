@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <application android:label="tic_tac_toe"
+    <application android:label="TicTacToe:2 Players-Nep"
                  android:name="${applicationName}"
-                 android:icon="@mipmap/ic_launcher">
+                 android:icon="@mipmap/app_icon">
         <activity android:name=".MainActivity"
                   android:exported="true"
                   android:launchMode="singleTop"
